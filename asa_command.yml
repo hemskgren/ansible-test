@@ -1,0 +1,61 @@
+- hosts: "{{ hosts_vars }}"
+  gather_facts: false
+  connection: local
+  vars:
+    cli:
+      host: "{{ inventory_hostname }}"
+      username: "{{ username }}"
+      password: "{{ password }}"
+      authorize: yes
+      auth_pass: "{{ password }}"
+      transport: cli
+
+  tasks:
+  - name: run show clock on remote devices
+    asa_command:
+      commands: show clock
+      provider: "{{ cli }}"
+    register: clock
+
+  - name: Show clock
+    debug: msg="{{ clock.stdout }}" 
+
+  - name: run show x on remote devices
+    asa_command:
+      commands: 
+      - show inventory
+      #- show bootvar
+      #- show dhcpd bind
+      - show ntp status
+#      - show asdm image
+      provider: "{{ cli }}"
+    register: clockk
+
+  - name: Show inventory 
+    debug: msg="{{ clockk.stdout_lines }}"
+
+#  - name: Collect facts from device
+#    asa_facts:
+#      gather_subset: 
+#        - "!filesystems"
+#        - serial
+#        - version
+#        - model
+#      provider: "{{ cli }}"
+#    register: iosfacts
+
+#  - name: Show facts from device
+#    debug: msg="Model= {{ ansible_net_model }} Serial= {{ ansible_net_serialnum
+ }} Version= {{ ansible_net_version }}" 
+
+#  - name: Show device neighbors
+#    debug: msg="Neighbors= {{ ansible_net_neighbors }}"
+
+#  - name: run show version and check to see if output contains IOS
+#    ios_command:
+#      commands: show version
+#      wait_for: result[0] contains IOS
+#      provider: "{{ cli }}"
+#    register: output
+      
+#  - debug: var=output

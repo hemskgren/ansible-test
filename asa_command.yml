@@ -45,8 +45,7 @@
 #    register: iosfacts
 
 #  - name: Show facts from device
-#    debug: msg="Model= {{ ansible_net_model }} Serial= {{ ansible_net_serialnum
- }} Version= {{ ansible_net_version }}" 
+#    debug: msg="Model= {{ ansible_net_model }} Serial= {{ ansible_net_serialnum }} Version= {{ ansible_net_version }}" 
 
 #  - name: Show device neighbors
 #    debug: msg="Neighbors= {{ ansible_net_neighbors }}"

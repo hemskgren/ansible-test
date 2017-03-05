@@ -11,14 +11,14 @@
       transport: cli
 
   tasks:
-  - name: run show  on remote devices
-    ios_command:
-      commands: show clock
-      provider: "{{ cli }}"
-    register: clock
+#  - name: run show  on remote devices
+#    ios_command:
+#      commands: show clock
+#      provider: "{{ cli }}"
+#    register: clock
 
-  - name: Show clock
-    debug: msg="{{ clock.stdout }}" 
+#  - name: Show clock
+#    debug: msg="{{ clock.stdout }}" 
 
   - name: Collect facts from device
     ios_facts:

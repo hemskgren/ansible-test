@@ -1,0 +1,50 @@
+- hosts: localhost
+  gather_facts: false
+  connection: local
+  tasks:
+#
+  - name: "check if local ansible ssh known_hosts contains device's fingerprint"
+    command: ssh-keygen -F {{ inventory_hostname }}
+    #command: ssh-keygen -l -f ~/.ssh/known_hosts -F {{ inventory_hostname }}
+    register: keygen
+    failed_when: keygen.stderr != ''
+    changed_when: False
+
+  - name: display local ssh known_hosts device fingerprint
+    debug:
+      msg: fingerprint = "{{ keygen.stdout_lines|default([]) }}"
+    when: keygen.rc == 0
+
+  - name: fetch remote device ssh fingerprint
+    command: ssh-keyscan -H {{ inventory_hostname }}
+    register: keyscan
+    failed_when: keyscan.rc != 0 or keyscan.stdout == ''
+    changed_when: False
+    #when: keygen.rc == 1
+
+  - name: display fetched device ssh fingerprint
+    debug:
+      msg: fingerprint = "{{ keyscan.stdout_lines|default([]) }}"
+    #when: keygen.rc == 1
+
+  - name: Compare local saved and remote fetched ssh fingerprint
+    debug:
+      msg: ansible local ssh known_hosts fingerprint need to be updated
+    when: keygen.rc != keyscan.rc
+
+  - name: Add/update the device ssh fingerprint to ansible ssh known_hosts
+    known_hosts:
+      #path: ~/.ssh_known_hosts
+      name: "{{ inventory_hostname }}"
+      state: present
+      #key: "{{ keyscan.stdout_lines }}" 
+      key: "{{ item }}"
+    when: keygen.rc == 1
+    with_items: "{{ keyscan.stdout_lines|default([]) }}"
+
+  - name: Remove the device ssh fingerprint from ansible servers
+    known_hosts:
+      #path: ~/.ssh/ssh_known_hosts
+      name: "{{ inventory_hostname }}"
+      state: absent
+    when: remove_key is defined

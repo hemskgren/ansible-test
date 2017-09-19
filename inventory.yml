@@ -8,7 +8,7 @@
       password: "{{ password }}"
       authorize: yes
       auth_pass: "{{ password }}"
-      transport: cli
+      #transport: cli
 
   tasks:
   - name: run show  on remote devices

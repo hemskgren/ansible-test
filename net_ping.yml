@@ -13,12 +13,14 @@
   - name: Test reachability to 10.10.10.10 using default vrf
     ios_ping:
       provider: "{{ provider }}"
-      dest: 192.168.98.1
+      #dest: 192.168.98.1
+      dest: "{{ ping_to }}"
 
   - name: Test reachability to 10.10.10.10 using default vrf
     net_ping:
       provider: "{{ provider }}"
-      dest: 192.168.98.1
+      #dest: 192.168.98.1
+      dest: "{{ ping_to }}"
 
 #- name: Test reachability to 10.20.20.20 using prod vrf
 #  net_ping:

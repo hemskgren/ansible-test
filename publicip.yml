@@ -5,10 +5,12 @@
 # Gather IP facts from ipify.org
   - name: get my public IP
     ipify_facts:
+    when: my_ip1 is defined
 
   - name: My public IP 
     #debug: msg= "{{ ipify_public_ip }}"
     debug: var=ipify_public_ip
+    when: my_ip1 is defined
 
 # Gather IP facts from your own ipify service endpoint
 #- name: get my public IP
@@ -18,3 +20,4 @@
     set_stats:
       data:
         my_public_ip:  "{{ ipify_public_ip }}"
+    when: my_ip1 is defined

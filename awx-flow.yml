@@ -8,3 +8,6 @@
       #debug: msg= {{ my_public_ip }}
       debug: var=my_public_ip
   
+    - name: Display My public IP from publicip2.yml
+      #debug: msg= {{ my_public_ip }}
+      debug: var=my_public_ip2

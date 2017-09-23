@@ -19,5 +19,5 @@
   - name: "Save public IP results to Tower Workflows"
     set_stats:
       data:
-        my_public_ip:  "{{ ipify_public_ip }}"
+        my_public_ip2:  "{{ ipify_public_ip }}"
     when: my_ip2 is defined

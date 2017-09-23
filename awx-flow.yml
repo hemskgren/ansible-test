@@ -1,0 +1,10 @@
+---
+- hosts: localhost
+  gather_facts: false
+  connection: local
+  tasks:
+  
+    - name: Display My public IP from  publicip.yml
+    debug: msg= "{{ my_public_ip }}"
+    debug: var=my_public_ip
+  

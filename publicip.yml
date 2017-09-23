@@ -6,13 +6,13 @@
   - name: get my public IP
     ipify_facts:
     #when: my_ip1 is defined
-    when: my_ip is my_ip1
+    when: my_ip == "my_ip1"
 
   - name: My public IP 
     #debug: msg= "{{ ipify_public_ip }}"
     debug: var=ipify_public_ip
     #when: my_ip1 is defined
-    when: my_ip is my_ip1
+    when: my_ip == "my_ip1"
 # Gather IP facts from your own ipify service endpoint
 #- name: get my public IP
 #  ipify_facts: api_url=http://api.example.com/ipify
@@ -22,4 +22,4 @@
       data:
         my_public_ip:  "{{ ipify_public_ip }}"
     #when: my_ip1 is defined
-    when: my_ip is my_ip1
+    when: my_ip == "my_ip1"

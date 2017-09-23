@@ -7,7 +7,9 @@
     - name: Display My public IP from publicip.yml
       #debug: msg= {{ my_public_ip }}
       debug: var=my_public_ip
+      when: my_ip1 is defined
   
     - name: Display My public IP from publicip2.yml
       #debug: msg= {{ my_public_ip }}
       debug: var=my_public_ip2
+      when: my_ip2 is defined

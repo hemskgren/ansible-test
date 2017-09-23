@@ -2,14 +2,14 @@
 - hosts: "{{ hosts_vars }}"
   gather_facts: false
   connection: local
-  tasks:
-  
-  - provider:
+  vars:
+    provider:
       host: "{{ inventory_hostname }}"
       username: "{{ username }}"
       password: "{{ password }}"
       network_os: "{{ network_os }}"
 
+  tasks:
   - name: Test reachability to 10.10.10.10 using default vrf
     net_ping:
       provider: "{{ provider }}"

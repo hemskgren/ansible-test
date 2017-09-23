@@ -10,13 +10,13 @@
       #ansible_network_os: "{{ network_os }}"
 
   tasks:
-  - name: Test reachability to 10.10.10.10 using default vrf
+  - name: Test reachability to "{{ ping_to }}" using default vrf and ios_ping.
     ios_ping:
       provider: "{{ provider }}"
       #dest: 192.168.98.1
       dest: "{{ ping_to }}"
 
-  - name: Test reachability to 10.10.10.10 using default vrf
+  - name: Test reachability to "{{ ping_to }}" using default vrf and platform agnostic ping.
     net_ping:
       provider: "{{ provider }}"
       #dest: 192.168.98.1

@@ -7,7 +7,7 @@
     ipify_facts:
 
   - name: My public IP 
-    debug: msg= "{{ ipify_public_ip }}"
+    #debug: msg= "{{ ipify_public_ip }}"
     debug: var=ipify_public_ip
 
 # Gather IP facts from your own ipify service endpoint

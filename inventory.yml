@@ -6,7 +6,7 @@
       host: "{{ inventory_hostname }}"
       username: "{{ username }}"
       password: "{{ password }}"
-      authorize: yes
+      authorize: no
       auth_pass: "{{ password }}"
       #transport: cli
 

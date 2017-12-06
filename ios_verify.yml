@@ -1,0 +1,107 @@
+---
+- hosts: Switch
+  gather_facts: false
+  #connection: local
+  vars:
+    cli:
+      host: "{{ inventory_hostname }}"
+      username: christer
+      password: hemgren
+      authorize: yes
+      auth_pass: hemgren
+
+  tasks:
+  - name: verify neighbur on device
+    ios_command:
+      commands: show cdp neig | beg Device ID
+      wait_for: 
+        - result[0] contains AP1602i
+        - result[0] contains esx1
+      provider: "{{ cli }}"
+    delegate_to: localhost
+    ignore_errors: yes
+    register: cdp
+
+  - name: verify arp and interface on devices
+    ios_command:
+      commands: 
+        - show arp | inc Internet
+        - show interface GigabitEthernet0/1
+        - show interface GigabitEthernet0/7
+        - show interface GigabitEthernet0/8
+        - show spanning-tree summary
+      provider: "{{ cli }}"
+      wait_for: 
+        - result[0] contains 192.168.98.1
+        - result[1] contains '0 input errors, 0 CRC, 0 frame, 0 overrun, 0 ignored'
+        - result[2] contains '0 input errors, 0 CRC, 0 frame, 0 overrun, 0 ignored'
+        - result[3] contains '0 input errors, 0 CRC, 0 frame, 0 overrun, 0 ignored'
+        - result[4] contains 'VLAN0001, VLAN0006-VLAN0015'
+          #msg: Expected arp for 192.168.98.1 and 192.168.98.5
+    delegate_to: localhost
+    ignore_errors: yes
+    register: arp
+
+  - name: show neighbour 
+    debug: var=cdp.stdout_lines
+  - name: show arp
+    debug: var=arp.stdout_lines
+
+  - name: Send notification message via Slack all options
+    slack:
+      token: T4Z8DQ44Q/B89LLL77B/PrUDibYzKeYZej1iF3uFqJ5Q
+      #domain: e-netops.slack.com
+      msg: '{{ inventory_hostname }} Failed'
+      channel: #ansible_awx
+      username: 'Ansible on {{ inventory_hostname }}'
+      icon_url: http://docs.ansible.com/ansible/latest/_static/images/logo_invert.png
+      link_names: 0
+      parse: 'none'
+    delegate_to: localhost
+    #when: "'DEFINED' in cdp.stdout_lines"
+
+- hosts: AP
+  gather_facts: false
+  #connection: local
+  vars:
+    cli:
+      host: "{{ inventory_hostname }}"
+      username: christer
+      password: hemgren
+      authorize: yes
+      auth_pass: hemgren
+
+  tasks:
+  - name: verify wifi, ntp and interface on devices
+    ios_command:
+      commands: 
+        - show dot11 ass
+        - show dot11 bssid
+        - show sntp
+        - show interface summary
+        #- show spanning-tree summary
+      provider: "{{ cli }}"
+      wait_for: 
+        - result[0] contains 192.168.96.
+        - result[1] contains Dot11Radio0
+        - result[1] contains Dot11Radio1
+        - result[2] contains Synced
+        - result[3] contains BVI1
+          #msg: Expected arp for 192.168.98.1 and 192.168.98.5
+    delegate_to: localhost
+    register: wifi
+
+  - name: show wifi
+    debug: var=wifi.stdout_lines
+
+  - name: Send notification message via Slack
+    slack:
+      token: T4Z8DQ44Q/B89LLL77B/PrUDibYzKeYZej1iF3uFqJ5Q
+      #domain: e-netops.slack.com
+      msg: '{{ inventory_hostname }} OK'
+      channel: #ansible_awx
+      username: 'Ansible on {{ inventory_hostname }}'
+      icon_url: http://docs.ansible.com/ansible/latest/_static/images/logo_invert.png
+      link_names: 0
+      parse: 'none'
+    delegate_to: localhost

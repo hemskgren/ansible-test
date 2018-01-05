@@ -1,8 +1,8 @@
 [AP]	
-192.168.96.102
+192.168.96.102 ansible_network_os: ios
 
 [ASA]
-192.168.96.1
+192.168.96.1 ansible_network_os: asa
 
 [Switch]
-192.168.98.5
+192.168.98.5 ansible_network_os: ios

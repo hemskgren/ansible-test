@@ -56,10 +56,10 @@
   vars:
     cli:
       host: "{{ inventory_hostname }}"
-      username: christer
-      password: hemgren
+      username: "{{ username }}"
+      password: "{{ password }}"
       authorize: yes
-      auth_pass: hemgren
+      auth_pass: "{{ password }}"
 
   tasks:
   - name: verify wifi, ntp and interface on devices

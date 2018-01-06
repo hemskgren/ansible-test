@@ -26,4 +26,4 @@ playbook: ios_verify.yml\
     tasks:\
       verify inv, route, arp and ntp	TAGS: []\
       asa fail	TAGS: []\
-      Send notification message via Slack all options	TAGS: []\
+      Send notification message via Slack all options	TAGS: []

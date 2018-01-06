@@ -5,10 +5,10 @@ run by:
 ansible-playbook inventory.yml  --extra-vars="hosts_vars=lan-dev username=userid password=mypwd"
 
 
-###
+# playbook doc
 ansible-playbook --list-tasks lan_verify.yml -e "hosts_vars=none"
 
-playbook: ios_verify.yml
+> playbook: ios_verify.yml
 
   play #1 (Switch): Switch	TAGS: []
     tasks:

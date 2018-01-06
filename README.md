@@ -7,8 +7,8 @@ ansible-playbook inventory.yml  --extra-vars="hosts_vars=lan-dev username=userid
 
 # playbook doc
 ansible-playbook --list-tasks lan_verify.yml -e "hosts_vars=none"
-
-> playbook: ios_verify.yml
+{exp:no_formatting}
+playbook: ios_verify.yml
 
   play #1 (Switch): Switch	TAGS: []
     tasks:
@@ -27,3 +27,4 @@ ansible-playbook --list-tasks lan_verify.yml -e "hosts_vars=none"
       verify inv, route, arp and ntp	TAGS: []
       asa fail	TAGS: []
       Send notification message via Slack all options	TAGS: []
+{/exp:no_formatting}

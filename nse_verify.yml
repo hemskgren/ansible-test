@@ -1,0 +1,36 @@
+---
+- hosts: localhost
+  gather_facts: false
+  #connection: local
+
+  tasks:
+  - name: get dcinf.se NS
+    debug: msg="NS record for dcinf.se {{ item }}"
+    with_items: "{{ lookup('dig', 'dcinf.se./NS', wantlist=True) }}"
+
+  - name: Verifying > nse1 -> dcinf.se
+    debug: msg="Querying nse1 for IPv4 address for nse1.dcinf.se. produces {{ lookup('dig', 'nse1.dcinf.se', '@213.153.115.21') }}"
+
+  - name: Verifying > nse1 -> sl.se
+    debug: msg="Querying nse1 for IPv4 address for sl.se. produces {{ lookup('dig', 'sl.se', '@213.153.115.21') }}"
+
+  - name: Verifying > nse1 -> systembolaget.se
+    debug: msg="Querying nse1 for IPv4 address for systembolaget.se. produces {{ lookup('dig', 'systembolaget.se', '@213.153.115.21') }}"
+ #
+  - name: Verifying > nse2 -> dcinf.se
+    debug: msg="Querying nse2 for IPv4 address for nse2.dcinf.se. produces {{ lookup('dig', 'nse2.dcinf.se', '@213.153.115.22') }}"
+
+  - name: Verifying > nse2 -> sl.se
+    debug: msg="Querying nse2 for IPv4 address for sl.se. produces {{ lookup('dig', 'sl.se', '@213.153.115.22') }}"
+
+  - name: Verifying > nse2 -> systembolaget.se
+    debug: msg="Querying nse2 for IPv4 address for systembolaget.se. produces {{ lookup('dig', 'systembolaget.se', '@213.153.115.22') }}"
+ #
+  - name: Verifying > nse3 -> dcinf.se
+    debug: msg="Querying nse3 for IPv4 address for nse3.dcinf.se. produces {{ lookup('dig', 'nse3.dcinf.se', '@192.165.115.23') }}"
+
+  - name: Verifying > nse3 -> sl.se
+    debug: msg="Querying nse3 for IPv4 address for sl.se. produces {{ lookup('dig', 'sl.se', '@192.165.115.23') }}"
+
+  - name: Verifying > nse3 -> systembolaget.se
+    debug: msg="Querying nse3 for IPv4 address for systembolaget.se. produces {{ lookup('dig', 'systembolaget.se', '@192.165.115.23') }}"

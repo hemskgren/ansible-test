@@ -31,7 +31,7 @@
       msg: "Expected '{{ asa_inv.failed_conditions }}' in show inventory"
     when: asa_inv is failed
 
-  - name: ASA show route connected
+  - name: ASA > show route connected | inc default route
     asa_command:
       commands: 
       - show route connec

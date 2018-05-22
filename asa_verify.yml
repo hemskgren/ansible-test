@@ -11,7 +11,7 @@
       auth_pass: "{{ password }}"
 
   tasks:
-  - name: ASA show inventory
+  - name: ASA > show inventory | inc 5505
     asa_command:
       commands: 
       - show inventory
@@ -19,7 +19,7 @@
       wait_for: 
         #msg: Expected ASA5505 in show inventory
         #delay: 2
-        - result[0] contains ASA55055
+        - result[0] contains ASA5505
     register: asa_inv
     ignore_errors: yes
     delegate_to: localhost

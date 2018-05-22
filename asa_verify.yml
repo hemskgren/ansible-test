@@ -29,7 +29,7 @@
   - name: asa inventory fail
     debug: 
       msg: "Expected '{{ asa_inv.failed_conditions }}' in show inventory"
-    when: asa_inv|failed
+    when: asa_inv is failed
 
   - name: ASA show route connected
     asa_command:
@@ -48,4 +48,4 @@
   - name: asa route failed
     debug: 
       msg: "Expected '{{ asa_route_c.failed_conditions }}' in show route connected"
-    when: asa_route_c|failed
+    when: asa_route_c is failed

@@ -84,7 +84,7 @@
   - name: AP fail
     debug: 
       msg: "Expected x+y , '{{ wifi.failed_conditions }}'"
-    when: wifi|failed
+    when: wifi is failed
 
   - name: Send notification message via Slack
     slack:

@@ -1,0 +1,52 @@
+---
+- name: modify my Cisco ASA with ansible
+  hosts: "{{ devices }}"
+  gather_facts: false
+  connection: local
+  vars:
+    cli:
+      host: "{{ inventory_hostname }}"
+      username: "{{ username }}"
+      password: "{{ password }}"
+      authorize: yes
+      auth_pass: "{{ password }}"
+      #transport: cli
+
+  tasks:
+  - name: configure ASA interface
+    asa_config:
+      lines:
+        - description my cloud interface
+        - nameif cloud13
+        - security-level 50
+        - ip address 192.168.13.1 255.255.255.0 standby 192.168.13.2
+      provider: "{{ cli }}"
+      parents: ["interface vlan 13"]
+    register: interface
+
+  - name: Show interface update
+    debug: msg="{{ interface }}"
+
+  - name: configure ASA acl
+    asa_acl:
+      lines:
+        - access-list cloud-acl_access_in extended permit udp any4 any4 eq domain
+        - access-list cloud-acl_access_in extended permit tcp any4 any4 eq ssh
+        - access-list cloud-acl_access_in extended permit tcp any4 any4 eq www
+        - access-list cloud-acl_access_in extended permit tcp any4 any4 eq 443
+        - access-list cloud-acl_access_in extended deny ip any any
+      provider: "{{ cli }}"
+    register: acl
+
+  - name: Show acl
+    debug: msg="{{ acl }}"
+
+  - name: attach ASA acl on interface vlan13/nameif cloud13
+    asa_config:
+      lines:
+        - access-group cloud-acl_access_in in interface cloud13
+      provider: "{{ cli }}"
+    register: acc_group
+
+  - name: Show access-group
+    debug: msg="{{ acc_group }}"

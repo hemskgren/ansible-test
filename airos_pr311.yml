@@ -1,0 +1,19 @@
+---
+- hosts: wlc
+  gather_facts: false
+  connection: network_cli
+  vars:
+    cli:
+      host: "{{ inventory_hostname }}"
+      username: "{{ username }}"
+      password: "{{ password }}"
+      #authorize: yes
+      #auth_pass: "{{ password }}"
+
+  tasks:
+  - name: add wifi guestuser with 2h access
+    aireos_config:
+      lines: 
+        - netuser add test01 test01 wlan 1 userType guest lifetime 7200 description "ansible created guest {{ lookup('pipe', 'date +%Y%m%d-%H%M') }}"
+        - netuser add test02 test02 guestlan corp-guest userType guest lifetime 7200 description "ansible created guest"
+        - config netuser guest-role qos data-rate average-data-rate test02 10000

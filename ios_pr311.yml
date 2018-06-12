@@ -3,12 +3,13 @@
   gather_facts: false
   connection: network_cli
   vars:
-    cli:
-      host: "{{ inventory_hostname }}"
-      username: "{{ username }}"
-      password: "{{ password }}"
-      authorize: yes
-      auth_pass: "{{ password }}"
+    #cli:
+    host: "{{ inventory_hostname }}"
+    ansible_user: "{{ username }}"
+    ansible_ssh_pass: "{{ password }}"
+    ansible_become: yes
+    ansible_become_method: enable
+    ansible_become_pass: "{{ password }}"
 
   tasks:
   #- name: verify arp and interface on devices
@@ -17,7 +18,7 @@
       diff_against: intended
       #match: exact
       intended_config: "{{ lookup('file', 'master.cfg') }}"
-      provider: "{{ cli }}"
+      #provider: "{{ cli }}"
     #delegate_to: localhost
     ignore_errors: yes
 
@@ -28,7 +29,7 @@
         - exec-timeout 20 0
         - transport input ssh
       parents: line vty 0 4
-      provider: "{{ cli }}"
+      #provider: "{{ cli }}"
     #delegate_to: localhost
 
   - name: secure device aaa config (need local user before)
@@ -39,7 +40,7 @@
         - aaa authorization exec default local
         - aaa authorization network default none
       #parents: aaa new-model
-      provider: "{{ cli }}"
+      #provider: "{{ cli }}"
     #delegate_to: localhost
 
   - name: secure device global config
@@ -56,5 +57,5 @@
         - no logging console
         - logging buffered 12000 warnings
       #parents: aaa new-model
-      provider: "{{ cli }}"
+      #provider: "{{ cli }}"
     #delegate_to: localhost

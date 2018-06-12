@@ -2,15 +2,15 @@
 - name: modify my Cisco ASA with ansible
   hosts: "{{ devices }}"
   gather_facts: false
-  connection: local
+  connection: network_cli
   vars:
-    cli:
-      host: "{{ inventory_hostname }}"
-      username: "{{ username }}"
-      password: "{{ password }}"
-      authorize: yes
-      auth_pass: "{{ password }}"
-      #transport: cli
+    #cli:
+    host: "{{ inventory_hostname }}"
+    ansible_user: "{{ username }}"
+    ansible_ssh_pass: "{{ password }}"
+    ansible_become: yes
+    ansible_become_method: enable
+    ansible_become_pass: "{{ password }}"
 
   tasks:
   - name: configure ASA interface
@@ -20,7 +20,7 @@
         - nameif cloud13
         - security-level 50
         - ip address 192.168.13.1 255.255.255.0 standby 192.168.13.2
-      provider: "{{ cli }}"
+      #provider: "{{ cli }}"
       parents: ["interface vlan 13"]
     register: interface
 
@@ -35,7 +35,7 @@
         - access-list cloud-acl_access_in extended permit tcp any4 any4 eq www
         - access-list cloud-acl_access_in extended permit tcp any4 any4 eq 443
         - access-list cloud-acl_access_in extended deny ip any any
-      provider: "{{ cli }}"
+      #provider: "{{ cli }}"
     register: acl
 
   - name: Show acl
@@ -45,7 +45,7 @@
     asa_config:
       lines:
         - access-group cloud-acl_access_in in interface cloud13
-      provider: "{{ cli }}"
+      #provider: "{{ cli }}"
     register: acc_group
 
   - name: Show access-group
@@ -56,7 +56,7 @@
       lines:
         - bgp log-neighbor-changes
         - bgp bestpath compare-routerid
-      provider: "{{ cli }}"
+      #provider: "{{ cli }}"
       parents:
         - router bgp 65002
     register: bgp
@@ -68,7 +68,7 @@
         - "bgp router-id {{ bgp_router_id }}"
         - "neighbor {{ bgp_neighbor_ip }} remote-as {{ bgp_neighbor_as }}"
         - "neighbor {{ bgp_neighbor_ip }} description {{ bgp_neighbor_name }}"
-      provider: "{{ cli }}"
+      #provider: "{{ cli }}"
       parents:
         - router bgp 65002
         - address-family ipv4 unicast

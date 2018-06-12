@@ -9,9 +9,9 @@
       password: "{{ password }}"
       #authorize: yes
       #auth_pass: "{{ password }}"
-
+    date: "{{ lookup('pipe', 'date +%Y%m%d-%H%M') }}"
   tasks:
-  - name: add wifi guestuser with 2h access
+  - name: add wifi guest user with 2h and 10mb/s limit
     aireos_config:
       lines: 
         - netuser add test01 test01 wlan 1 userType guest lifetime 7200 description "ansible created guest {{ lookup('pipe', 'date +%Y%m%d-%H%M') }}"

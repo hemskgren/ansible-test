@@ -7,7 +7,7 @@
     ipify_facts:
     when: my_ip2 is defined
 
-  - name: My public IP 
+  - name: My public IP
     #debug: msg= "{{ ipify_public_ip }}"
     debug: var=ipify_public_ip
     when: my_ip2 is defined

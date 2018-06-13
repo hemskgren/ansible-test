@@ -8,7 +8,7 @@
     when: my_ip1 is defined
     #when: my_ip == "my_ip1"
 
-  - name: My public IP 
+  - name: My public IP
     #debug: msg= "{{ ipify_public_ip }}"
     debug: var=ipify_public_ip
     when: my_ip1 is defined

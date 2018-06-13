@@ -13,10 +13,10 @@
   tasks:
   - name: ASA > show inventory | inc 5505
     asa_command:
-      commands: 
+      commands:
       - show inventory
       provider: "{{ cli }}"
-      wait_for: 
+      wait_for:
         #msg: Expected ASA5505 in show inventory
         #delay: 2
         - result[0] contains ASA5505
@@ -27,18 +27,18 @@
 #  - name: asa inventory
 #    debug: var=asa_inv
   - name: asa inventory fail
-    debug: 
+    debug:
       msg: "Expected '{{ asa_inv.failed_conditions }}' in show inventory"
     when: asa_inv is failed
 
   - name: ASA > show route connected | inc default route
     asa_command:
-      commands: 
+      commands:
       - show route connec
       provider: "{{ cli }}"
       wait_for:
         #msg: Expected defult route
-        - result[0] contains 'network 0.0.0.0' 
+        - result[0] contains 'network 0.0.0.0'
     register: asa_route_c
     ignore_errors: yes
     delegate_to: localhost
@@ -46,6 +46,6 @@
 #  - name: asa route
 #    debug: var=asa_route_c
   - name: asa route failed
-    debug: 
+    debug:
       msg: "Expected '{{ asa_route_c.failed_conditions }}' in show route connected"
     when: asa_route_c is failed

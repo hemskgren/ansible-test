@@ -13,7 +13,7 @@
   tasks:
   - name: verify arp and interface on devices
     ios_command:
-      commands: 
+      commands:
         - show arp | inc Internet
         - show interface GigabitEthernet0/1
         - show interface GigabitEthernet0/7
@@ -21,20 +21,20 @@
         - show spanning-tree summary
         - show cdp neig | beg Device ID
       provider: "{{ cli }}"
-      wait_for: 
+      wait_for:
         - result[0] contains 192.168.98.1
         - result[1] contains '0 input errors, 0 CRC, 0 frame, 0 overrun, 0 ignored'
         - result[2] contains '0 input errors, 0 CRC, 0 frame, 0 overrun, 0 ignored'
         - result[3] contains '0 input errors, 0 CRC, 0 frame, 0 overrun, 0 ignored'
         - result[4] contains 'VLAN0001, VLAN0006-VLAN0015'
         - result[5] contains AP1602i
-        - result[5] contains esx1 
+        - result[5] contains esx1
     delegate_to: localhost
     ignore_errors: yes
     register: switch
 
   - name: switch fail
-    debug: 
+    debug:
       msg: "Expected x+y , '{{ switch.failed_conditions }}'"
     when: switch is failed
 
@@ -64,14 +64,14 @@
   tasks:
   - name: verify wifi, ntp and interface on devices
     ios_command:
-      commands: 
+      commands:
         - show dot11 ass
         - show dot11 bssid
         - show sntp
         - show interface summary
         #- show spanning-tree summary
       provider: "{{ cli }}"
-      wait_for: 
+      wait_for:
         - result[0] contains 192.168.96.
         - result[1] contains Dot11Radio0
         - result[1] contains Dot11Radio1
@@ -82,7 +82,7 @@
     register: wifi
 
   - name: AP fail
-    debug: 
+    debug:
       msg: "Expected x+y , '{{ wifi.failed_conditions }}'"
     when: wifi is failed
 
@@ -91,7 +91,7 @@
       token: '{{ slack_token }}'
       msg: AP '{{ inventory_hostname }} failed'
       username: 'Ansible on {{ inventory_hostname }}'
-      channel: #ansible_awx      
+      channel: #ansible_awx
       icon_url: http://docs.ansible.com/ansible/latest/_static/images/logo_invert.png
       link_names: 0
       parse: 'none'
@@ -112,14 +112,14 @@
   tasks:
   - name: verify inv, route, arp and ntp
     asa_command:
-      commands: 
+      commands:
       - show inventory
       - show route connec
       - show arp
       #- show dhcpd bind
       - show ntp status
       provider: "{{ cli }}"
-      wait_for: 
+      wait_for:
         - result[0] contains ASA5505
         - result[1] contains 'network 0.0.0.0'
         - result[2] contains outside
@@ -132,7 +132,7 @@
 #  - name: asa command
 #    debug: var=asa.failed_conditions
   - name: asa fail
-    debug: 
+    debug:
       msg: "Expected ASA5505 , '{{ asa.failed_conditions }}'"
     when: asa is failed
 

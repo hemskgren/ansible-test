@@ -22,6 +22,12 @@
     #delegate_to: localhost
     ignore_errors: yes
 
+  - name: check the startup-config against the running-config
+    ios_config:
+      diff_against: startup
+      diff_ignore_lines:
+        - ntp clock .*
+
   - name: secure device vty access
     ios_config:
       lines:

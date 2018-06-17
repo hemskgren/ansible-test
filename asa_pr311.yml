@@ -74,3 +74,35 @@
         - address-family ipv4 unicast
     register: bgp
     when: bgp_neighbor_as is defined
+
+  # Pause for 5 minutes to build app cache.
+  - name: pause 5 sec
+    pause:
+      seconds: 5
+
+  - name: remove ASA interface
+    asa_config:
+      lines:
+        #- no access-group cloud-acl_access_in in interface cloud10
+        #- no access-group cloud-acl_access_in in interface cloud11
+        #- no access-group cloud-acl_access_in in interface cloud12
+        - no access-group cloud-acl_access_in in interface cloud13
+        #- no access-list cloud-acl_access_in
+        #- no interface vlan 10
+        #- no interface vlan 11
+        #- no interface vlan 12
+        - no interface vlan 13
+      #provider: "{{ cli }}"
+      #parents: ["interface vlan 13"]
+    register: interface
+
+  - name: Remove ASA (9.2>) BGP neigbor
+    asa_config:
+      lines:
+        - "no neighbor {{ bgp_neighbor_ip }}"
+      #provider: "{{ cli }}"
+      parents:
+        - router bgp 65002
+        - address-family ipv4 unicast
+    register: no_bgp
+    when: bgp_neighbor_as is defined

@@ -26,6 +26,11 @@
       validate_certs: False
     register: vm_facts
     delegate_to: localhost
- 
-  - debug:
+
+  - name: esx facts
+    debug:
+      var: ansible_facts
+  
+  - name: vm facts
+    debug:
       var: vm_facts.virtual_machines 

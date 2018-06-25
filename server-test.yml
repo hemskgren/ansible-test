@@ -1,0 +1,7 @@
+---
+- hosts: 192.168.96.204
+  
+  tasks:
+    - name: return motd to registered var
+      command: cat /etc/motd
+      register: mymotd

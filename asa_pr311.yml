@@ -125,7 +125,7 @@
     register: no_bgp
     when: bgp_neighbor_as is defined
  
-   - name: Remove ASA BGP global config
+  - name: Remove ASA BGP global config
     asa_config:
       lines:
         - no router bgp 65002

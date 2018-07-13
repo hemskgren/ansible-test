@@ -2,6 +2,8 @@
 - name: modify my Cisco ASA with ansible
   hosts: "{{ devices }}"
   gather_facts: false
+  tags:
+    - add_bgp
   connection: network_cli
   vars:
     #cli:
@@ -80,6 +82,22 @@
     pause:
       seconds: 5
 
+- name: modify my Cisco ASA with ansible
+  hosts: "{{ devices }}"
+  gather_facts: false
+  tags:
+    - remove_bgp
+  connection: network_cli
+  vars:
+    #cli:
+    host: "{{ inventory_hostname }}"
+    ansible_user: "{{ username }}"
+    ansible_ssh_pass: "{{ password }}"
+    ansible_become: yes
+    ansible_become_method: enable
+    ansible_become_pass: "{{ password }}"
+
+  tasks:
   - name: remove ASA interface
     asa_config:
       lines:
@@ -96,7 +114,7 @@
       #parents: ["interface vlan 13"]
     register: interface
 
-  - name: Remove ASA (9.2>) BGP neigbor
+  - name: Remove ASA BGP neigbor
     asa_config:
       lines:
         - "no neighbor {{ bgp_neighbor_ip }}"
@@ -106,3 +124,10 @@
         - address-family ipv4 unicast
     register: no_bgp
     when: bgp_neighbor_as is defined
+ 
+   - name: Remove ASA BGP global config
+    asa_config:
+      lines:
+        - no router bgp 65002
+    register: no_bgp
+    when: no_bgp is defined 

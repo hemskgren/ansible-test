@@ -36,7 +36,7 @@
   - name: switch fail
     debug: 
       msg: "Expected x+y , '{{ switch.failed_conditions }}'"
-    when: switch|failed
+    when: switch is failed
 
   - name: Send notification message via Slack all options
     slack:
@@ -48,7 +48,7 @@
       link_names: 0
       parse: 'none'
     delegate_to: localhost
-    when: switch|failed
+    when: switch is failed
 
 - hosts: AP
   gather_facts: false
@@ -96,7 +96,7 @@
       link_names: 0
       parse: 'none'
     delegate_to: localhost
-    when: wifi|failed
+    when: wifi is failed
 
 - hosts: ASA
   gather_facts: false
@@ -134,7 +134,7 @@
   - name: asa fail
     debug: 
       msg: "Expected ASA5505 , '{{ asa.failed_conditions }}'"
-    when: asa|failed
+    when: asa is failed
 
   - name: Send notification message via Slack all options
     slack:
@@ -147,4 +147,4 @@
       link_names: 0
       parse: 'none'
     delegate_to: localhost
-    when: asa|failed
+    when: asa is failed

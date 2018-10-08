@@ -48,7 +48,7 @@
       link_names: 0
       parse: 'none'
     delegate_to: localhost
-    when: switch is failed
+    when: slack_token is defined and switch is failed
 
 - hosts: AP
   gather_facts: false
@@ -96,7 +96,7 @@
       link_names: 0
       parse: 'none'
     delegate_to: localhost
-    when: wifi is failed
+    when: slack_token is defined and wifi is failed
 
 - hosts: ASA
   gather_facts: false
@@ -147,4 +147,4 @@
       link_names: 0
       parse: 'none'
     delegate_to: localhost
-    when: asa is failed
+    when: slack_token is defined and asa is failed

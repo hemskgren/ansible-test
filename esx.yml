@@ -1,0 +1,36 @@
+---
+#- name: esx facts
+- hosts: localhost
+  gather_facts: false
+  vars:
+    hostname: 192.168.96.250
+    #username: myuserid
+    #password: mypassword
+         
+  tasks:
+  - name: Gather vmware host facts
+    vmware_host_facts:
+      hostname: '{{ hostname }}'
+      username: '{{ username }}'
+      password: '{{ password }}'
+      validate_certs: False
+    register: host_facts
+    delegate_to: localhost
+
+  - name: Gather only registered virtual machines
+    vmware_vm_facts:
+      hostname: '{{ hostname }}'
+      username: '{{ username }}'
+      password: '{{ password }}'
+      vm_type: vm
+      validate_certs: False
+    register: vm_facts
+    delegate_to: localhost
+
+  - name: esx facts
+    debug:
+      var: ansible_facts
+  
+  - name: vm facts
+    debug:
+      var: vm_facts.virtual_machines 

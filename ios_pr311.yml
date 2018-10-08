@@ -1,0 +1,67 @@
+---
+- hosts: Switch
+  gather_facts: false
+  connection: network_cli
+  vars:
+    #cli:
+    host: "{{ inventory_hostname }}"
+    ansible_user: "{{ username }}"
+    ansible_ssh_pass: "{{ password }}"
+    ansible_become: yes
+    ansible_become_method: enable
+    ansible_become_pass: "{{ password }}"
+
+  tasks:
+  #- name: verify arp and interface on devices
+  - name: check the running-config against master config
+    ios_config:
+      diff_against: intended
+      #match: exact
+      intended_config: "{{ lookup('file', 'master.cfg') }}"
+      #provider: "{{ cli }}"
+    #delegate_to: localhost
+    ignore_errors: yes
+
+  - name: check the startup-config against the running-config
+    ios_config:
+      diff_against: startup
+      diff_ignore_lines:
+        - ntp clock .*
+
+  - name: secure device vty access
+    ios_config:
+      lines:
+        - access-class 1 in
+        - exec-timeout 20 0
+        - transport input ssh
+      parents: line vty 0 4
+      #provider: "{{ cli }}"
+    #delegate_to: localhost
+
+  - name: secure device aaa config (need local user before)
+    ios_config:
+      lines:
+        - aaa new-model
+        - aaa authentication login default local
+        - aaa authorization exec default local
+        - aaa authorization network default none
+      #parents: aaa new-model
+      #provider: "{{ cli }}"
+    #delegate_to: localhost
+
+  - name: secure device global config
+    ios_config:
+      lines:
+        - service timestamps debug datetime msec
+        - service timestamps log datetime msec
+        - service password-encryption
+        - no ip source-route
+        - ip ssh version 2
+        - no ip http server
+        - clock timezone cet 1 0
+        - ntp server 192.36.143.130
+        - no logging console
+        - logging buffered 12000 warnings
+      #parents: aaa new-model
+      #provider: "{{ cli }}"
+    #delegate_to: localhost

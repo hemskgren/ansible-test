@@ -1,0 +1,26 @@
+---
+- hosts: wlc
+  gather_facts: false
+  connection: network_cli
+  vars:
+    #cli:
+    host: "{{ inventory_hostname }}"
+    ansible_user: "{{ username }}"
+    ansible_ssh_pass: "{{ password }}"
+    ansible_become: yes
+    ansible_become_method: enable
+    ansible_become_pass: "{{ password }}"
+    cli:
+      host: "{{ inventory_hostname }}"
+      username: "{{ username }}"
+      password: "{{ password }}"
+      #authorize: yes
+      #auth_pass: "{{ password }}"
+    date: "{{ lookup('pipe', 'date +%Y%m%d-%H%M') }}"
+  tasks:
+  - name: add wifi guest user with 2h and 10mb/s limit
+    aireos_config:
+      lines:
+        - netuser add test01 test01 wlan 1 userType guest lifetime 7200 description "ansible created guest {{ lookup('pipe', 'date +%Y%m%d-%H%M') }}"
+        - netuser add test02 test02 guestlan corp-guest userType guest lifetime 7200 description "ansible created guest"
+        - config netuser guest-role qos data-rate average-data-rate test02 10000

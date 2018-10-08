@@ -1,0 +1,133 @@
+---
+- name: modify my Cisco ASA with ansible
+  hosts: "{{ devices }}"
+  gather_facts: false
+  tags:
+    - add_bgp
+  connection: network_cli
+  vars:
+    #cli:
+    host: "{{ inventory_hostname }}"
+    ansible_user: "{{ username }}"
+    ansible_ssh_pass: "{{ password }}"
+    ansible_become: yes
+    ansible_become_method: enable
+    ansible_become_pass: "{{ password }}"
+
+  tasks:
+  - name: configure ASA interface
+    asa_config:
+      lines:
+        - description my cloud interface
+        - nameif cloud13
+        - security-level 50
+        - ip address 192.168.13.1 255.255.255.0 standby 192.168.13.2
+      #provider: "{{ cli }}"
+      parents: ["interface Vlan13"]
+    register: interface
+
+  - name: Show interface update
+    debug: msg="{{ interface }}"
+
+  - name: configure ASA acl
+    asa_acl:
+      lines:
+        - access-list cloud-acl_access_in extended permit udp any4 any4 eq domain
+        - access-list cloud-acl_access_in extended permit tcp any4 any4 eq ssh
+        - access-list cloud-acl_access_in extended permit tcp any4 any4 eq www
+        - access-list cloud-acl_access_in extended permit tcp any4 any4 eq 443
+        - access-list cloud-acl_access_in extended deny ip any any
+      #provider: "{{ cli }}"
+    register: acl
+
+  - name: Show acl
+    debug: msg="{{ acl }}"
+
+  - name: attach ASA acl on interface vlan13/nameif cloud13
+    asa_config:
+      lines:
+        - access-group cloud-acl_access_in in interface cloud13
+      #provider: "{{ cli }}"
+    register: acc_group
+
+  - name: Show access-group
+    debug: msg="{{ acc_group }}"
+
+  - name: configure ASA (9.2>) defult BGP
+    asa_config:
+      lines:
+        - bgp log-neighbor-changes
+        - bgp bestpath compare-routerid
+      #provider: "{{ cli }}"
+      parents:
+        - router bgp 65002
+    register: bgp
+    when: bgp_defult_config is defined
+
+  - name: configure ASA (9.2>) BGP neigbor in defult singel context mode
+    asa_config:
+      lines:
+        - "bgp router-id {{ bgp_router_id }}"
+        - "neighbor {{ bgp_neighbor_ip }} remote-as {{ bgp_neighbor_as }}"
+        - "neighbor {{ bgp_neighbor_ip }} description {{ bgp_neighbor_name }}"
+      #provider: "{{ cli }}"
+      parents:
+        - router bgp 65002
+        - address-family ipv4 unicast
+    register: bgp
+    when: bgp_neighbor_as is defined
+
+  # Pause for 5 minutes to build app cache.
+  - name: pause 5 sec
+    pause:
+      seconds: 5
+
+- name: modify my Cisco ASA with ansible
+  hosts: "{{ devices }}"
+  gather_facts: false
+  tags:
+    - remove_bgp
+  connection: network_cli
+  vars:
+    #cli:
+    host: "{{ inventory_hostname }}"
+    ansible_user: "{{ username }}"
+    ansible_ssh_pass: "{{ password }}"
+    ansible_become: yes
+    ansible_become_method: enable
+    ansible_become_pass: "{{ password }}"
+
+  tasks:
+  - name: remove ASA interface
+    asa_config:
+      lines:
+        #- no access-group cloud-acl_access_in in interface cloud10
+        #- no access-group cloud-acl_access_in in interface cloud11
+        #- no access-group cloud-acl_access_in in interface cloud12
+        - no access-group cloud-acl_access_in in interface cloud13
+        #- no access-list cloud-acl_access_in
+        #- no interface vlan 10
+        #- no interface vlan 11
+        #- no interface vlan 12
+        - no interface vlan 13
+      #provider: "{{ cli }}"
+      #parents: ["interface vlan 13"]
+    register: interface
+
+  - name: Remove ASA BGP neigbor
+    asa_config:
+      lines:
+        - "no neighbor {{ bgp_neighbor_ip }}"
+      #provider: "{{ cli }}"
+      parents:
+        - router bgp 65002
+        - address-family ipv4 unicast
+    register: no_bgp
+    when: bgp_neighbor_as is defined
+ 
+  - name: Remove ASA BGP global config
+    asa_config:
+      lines:
+        - no router bgp 65002
+    register: no_bgp
+    when: no_bgp is defined 

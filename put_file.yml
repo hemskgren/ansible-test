@@ -1,0 +1,17 @@
+---
+- hosts: Switch
+  gather_facts: false
+  connection: network_cli
+  vars:
+    cli:
+      host: "{{ inventory_hostname }}"
+      ansible_user: "{{ username }}"
+      ansible_ssh_pass: "{{ password }}"
+      ansible_become: yes
+      ansible_become_method: enable
+      ansible_become_pass: "{{ password }}"
+
+  tasks:
+  - name: put file on devices
+    net_put:
+      src: master.cfg
